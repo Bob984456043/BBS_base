@@ -1,5 +1,5 @@
 from  rest_framework import views
-from  . import models
+from  . import models,blog_serializer
 from django.contrib.auth.models import User
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication,BasicAuthentication
@@ -12,17 +12,18 @@ class ArticleDetailAPI(views.APIView):
         id = request.data.get('id')
         try:
             article = models.Article.objects.get(id=id)
-            user=article.user
-            ret['id']=article.id
-            ret['title']=article.title
-            ret['category']=article.category
-            ret['content']=article.content
-            ret['post_time']=article.post_time
-            ret['views']=article.views
-            ret['comments']=article.comments
-            ret['user_id']=user.id
-            ret['username']=user.username
-            ret['email']=user.email
-
+            # user=article.user
+            # ret['id']=article.id
+            # ret['title']=article.title
+            # ret['category']=article.category
+            # ret['content']=article.content
+            # ret['post_time']=article.post_time
+            # ret['views']=article.views
+            # ret['comments']=article.comments
+            # ret['user_id']=user.id
+            # ret['username']=user.username
+            # ret['email']=user.email
+            serializer=blog_serializer.ArticleSerializer(article)
+            ret=serializer.data
         except:
             ret['msg']='文章id不存在'
