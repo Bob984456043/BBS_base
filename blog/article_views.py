@@ -7,9 +7,11 @@ from rest_framework.authtoken.models import Token
 # Create your views here.
 
 class ArticleDetailAPI(views.APIView):
+    authentication_classes = []
+    permission_classes = []
     def get(self,request,*args,**kwargs):
         ret={}
-        id = request.data.get('id')
+        id = request.query_params.get('id')
         try:
             article = models.Article.objects.get(id=id)
             # user=article.user
@@ -23,7 +25,22 @@ class ArticleDetailAPI(views.APIView):
             # ret['user_id']=user.id
             # ret['username']=user.username
             # ret['email']=user.email
-            serializer=blog_serializer.ArticleSerializer(article)
-            ret=serializer.data
         except:
             ret['msg']='文章id不存在'
+        serializer=blog_serializer.ArticleSerializer(article)
+        ret=serializer.data
+        return Response(ret)
+    def post(self,request,*args,**kwargs):
+        title=request.data.get('title')
+        category=request.data.get('category')
+        content=request.data.get('content')
+        post_time=request.data.get('post_time')
+        user_id=request.data.get('user_id')
+        models.Article.objects.create(title=title,category=category,content=content,post_time=post_time,user_id=user_id)
+        return Response({
+            'title':title,
+            'category':category,
+            'content':content,
+            'post_time':post_time,
+            'user_id':user_id
+        })

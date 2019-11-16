@@ -1,7 +1,11 @@
 from rest_framework import serializers
 from . import models
-class ArticleSerializer(serializers.Serializer):
-    # id=serializers.IntegerField()
+class ArticleSerializer(serializers.ModelSerializer):
+    id=serializers.CharField()
+    views = serializers.CharField()
+    comments = serializers.CharField()
+    user_id = serializers.CharField()
+    username=serializers.CharField
     # title=serializers.CharField()
     # category=serializers.CharField()
     # content=serializers.CharField()
@@ -11,4 +15,4 @@ class ArticleSerializer(serializers.Serializer):
     # user=models.ForeignKey(User,on_delete=models.CASCADE)
     class Meta:
         model=models.Article
-        fields='__all__'
+        fields="__all__"
