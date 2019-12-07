@@ -17,7 +17,7 @@ class Comment(models.Model):
     id=models.AutoField(primary_key=True)
     content=models.CharField(max_length=1000)
     post_time=models.DateTimeField()
-    stars=models.IntegerField()
+    stars=models.IntegerField(default=0)
     article=models.ForeignKey(Article,on_delete=models.CASCADE)
     user=models.ForeignKey(User,on_delete=models.CASCADE)
     class Meta:
