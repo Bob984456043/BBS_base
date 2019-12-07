@@ -1,9 +1,6 @@
-from  rest_framework import views
-from  . import models,blog_serializer
-from django.contrib.auth.models import User
+from rest_framework import views
+from . import models,blog_serializer
 from rest_framework.response import Response
-from rest_framework.authentication import TokenAuthentication,BasicAuthentication
-from rest_framework.authtoken.models import Token
 # Create your views here.
 from rest_framework.pagination import PageNumberPagination
 
@@ -14,6 +11,8 @@ class CommentPagination(PageNumberPagination):
     max_page_size = 20
 
 class CommentQueryAPI(views.APIView):
+    authentication_classes = []
+    permission_classes = []
     def get(self,request,*args,**kwargs):
         ret={}
         article_id=request.query_params.get('article_id')
@@ -27,6 +26,35 @@ class CommentQueryAPI(views.APIView):
         return Response(ret)
 
 class CommentDetailAPI(views.APIView):
+    def dispatch(self, request, *args, **kwargs):
+        #实现特定method执行token认证
+        if request.method.lower()=='get':
+            self.authentication_classes=[]
+            self.permission_classes=[]
+        #----------------------------------------------------------
+        self.args = args
+        self.kwargs = kwargs
+        request = self.initialize_request(request, *args, **kwargs)
+        self.request = request
+        self.headers = self.default_response_headers  # deprecate?
+
+        try:
+            self.initial(request, *args, **kwargs)
+
+            # Get the appropriate handler method
+            if request.method.lower() in self.http_method_names:
+                handler = getattr(self, request.method.lower(),
+                                  self.http_method_not_allowed)
+            else:
+                handler = self.http_method_not_allowed
+
+            response = handler(request, *args, **kwargs)
+
+        except Exception as exc:
+            response = self.handle_exception(exc)
+
+        self.response = self.finalize_response(request, response, *args, **kwargs)
+        return self.response
     def get(self,request,*args,**kwargs):
         ret={}
         id = request.query_params.get('id')

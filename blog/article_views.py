@@ -12,8 +12,9 @@ class SelfPaginations(PageNumberPagination):
     page_query_param = 'page'
     page_size_query_param = 'page_size'
     max_page_size = 20
-
 class ArticleQureyAPI(views.APIView):
+    authentication_classes = []
+    permission_classes = []
     def get(self,request,*args,**kwargs):
         ret={}
         user_id=request.query_params.get('id')
@@ -36,8 +37,36 @@ class ArticleQureyAPI(views.APIView):
         return Response(ret)
 
 class ArticleDetailAPI(views.APIView):
-    authentication_classes = []
-    permission_classes = []
+
+    def dispatch(self, request, *args, **kwargs):
+        #实现特定method执行token认证
+        if request.method.lower()=='get':
+            self.authentication_classes=[]
+            self.permission_classes=[]
+        self.args = args
+        self.kwargs = kwargs
+        request = self.initialize_request(request, *args, **kwargs)
+        self.request = request
+        self.headers = self.default_response_headers  # deprecate?
+
+        try:
+            self.initial(request, *args, **kwargs)
+
+            # Get the appropriate handler method
+            if request.method.lower() in self.http_method_names:
+                handler = getattr(self, request.method.lower(),
+                                  self.http_method_not_allowed)
+            else:
+                handler = self.http_method_not_allowed
+
+            response = handler(request, *args, **kwargs)
+
+        except Exception as exc:
+            response = self.handle_exception(exc)
+
+        self.response = self.finalize_response(request, response, *args, **kwargs)
+        return self.response
+
     def get(self,request,*args,**kwargs):
         ret={}
         id = request.query_params.get('id')
@@ -47,17 +76,6 @@ class ArticleDetailAPI(views.APIView):
             serializer = blog_serializer.ArticleSerializer(article)
             ret = serializer.data
             return Response(ret)
-            # user=article.user
-            # ret['id']=article.id
-            # ret['title']=article.title
-            # ret['category']=article.category
-            # ret['content']=article.content
-            # ret['post_time']=article.post_time
-            # ret['views']=article.views
-            # ret['comments']=article.comments
-            # ret['user_id']=user.id
-            # ret['username']=user.username
-            # ret['email']=user.email
         except:
             ret['msg']='文章id不存在'
         return Response(ret)
