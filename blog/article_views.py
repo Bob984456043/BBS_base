@@ -1,9 +1,6 @@
 from  rest_framework import views
 from  . import models,blog_serializer
-from django.contrib.auth.models import User
 from rest_framework.response import Response
-from rest_framework.authentication import TokenAuthentication,BasicAuthentication
-from rest_framework.authtoken.models import Token
 # Create your views here.
 from rest_framework.pagination import PageNumberPagination
 

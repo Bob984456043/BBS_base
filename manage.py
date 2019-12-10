@@ -1,7 +1,13 @@
 #!/usr/bin/env python
 """Django's command-line utility for administrative tasks."""
+import datetime
 import os
 import sys
+
+
+
+from BBS_base.settings import BASE_DIR
+
 
 def main():
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'BBS_base.settings')
@@ -14,6 +20,7 @@ def main():
             "forget to activate a virtual environment?"
         ) from exc
     execute_from_command_line(sys.argv)
+
 
 
 if __name__ == '__main__':
