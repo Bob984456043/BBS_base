@@ -19,9 +19,10 @@ class CommentSerializer(serializers.ModelSerializer):
     stars=serializers.CharField(required=False)
     article_id=serializers.CharField(required=False)
     user_id=serializers.CharField(required=False)
+    username=serializers.CharField(required=False)
     class Meta:
         model=models.Comment
-        fields=['id','content','post_time','stars','article_id','user_id']
+        fields=['id','content','post_time','stars','article_id','user_id','username']
 class UserSerisalizer(serializers.ModelSerializer):
     id=serializers.CharField(required=False)
     username=serializers.CharField(required=False)

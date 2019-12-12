@@ -21,6 +21,7 @@ class Comment(models.Model):
     post_time=models.DateTimeField()
     stars=models.IntegerField(default=0)
     article=models.ForeignKey(Article,on_delete=models.CASCADE)
+    username=models.CharField(max_length=50,default='')
     user=models.ForeignKey(User,on_delete=models.CASCADE)
     class Meta:
         db_table='comment'

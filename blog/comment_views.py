@@ -74,8 +74,9 @@ class CommentDetailAPI(views.APIView):
         post_time=request.data.get('post_time')
         article_id=request.data.get('article_id')
         user_id=request.data.get('user_id')
-        article=models.Comment.objects.create(content=content,post_time=post_time,user_id=user_id,article_id=article_id)
-        comment_serializer=blog_serializer.CommentSerializer(article)
+        username=request.data.get('username')
+        comment=models.Comment.objects.create(content=content,post_time=post_time,user_id=user_id,article_id=article_id,username=username)
+        comment_serializer=blog_serializer.CommentSerializer(comment)
         return Response(comment_serializer.data)
 
     def delete(self,request,*args,**kwargs):
